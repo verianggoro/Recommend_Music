@@ -21,7 +21,7 @@ class RecommendationViewModel: ViewModel() {
     private val TAG = RecommendationViewModel::class.java.simpleName
     private var recomm: MutableLiveData<Song> = MutableLiveData()
 
-    fun sendingRequest(context: Context, userId: String, loadingBar: View, editText: EditText){
+    fun sendingRequest(context: Context, userId: String, editText: EditText){
         val params: HashMap<String, String>? = hashMapOf()
         val form: HashMap<String, String?> = hashMapOf()
         viewModelScope.launch {
@@ -38,13 +38,9 @@ class RecommendationViewModel: ViewModel() {
                     val gson = Gson()
                     val songMapper = gson.fromJson(response, Song::class.java)
                     recomm.postValue(songMapper)
-                    withContext(Dispatchers.Main){
-                        loadingBar.visibility = View.GONE
-                    }
                 }catch (e: Exception){
                     withContext(Dispatchers.Main) {
                         Utilities.showErrorDialog(context, e)
-                        loadingBar.visibility = View.GONE
                     }
                 }
             }

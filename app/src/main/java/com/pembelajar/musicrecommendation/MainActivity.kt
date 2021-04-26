@@ -12,15 +12,19 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.pembelajar.musicrecommendation.adapter.SongAdapter
 import com.pembelajar.musicrecommendation.commons.Utilities
 import com.pembelajar.musicrecommendation.databinding.ActivityMainBinding
+import com.pembelajar.musicrecommendation.fragment.LoadingFragment
 import com.pembelajar.musicrecommendation.model.DataList
 import com.pembelajar.musicrecommendation.viewmodel.RecommendationViewModel
+import com.pembelajar.musicrecommendation.viewmodel.TestConnectionViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: RecommendationViewModel
+    private lateinit var viewModelTest: TestConnectionViewModel
     private lateinit var songAdapter: SongAdapter
 
 
@@ -28,28 +32,43 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         viewModel = ViewModelProvider(this).get(RecommendationViewModel::class.java)
+        viewModelTest = ViewModelProvider(this).get(TestConnectionViewModel::class.java)
         binding.bottomSheetLayout.rvResultRekom.layoutManager = LinearLayoutManager(this)
         val bottomSheet = BottomSheetBehavior.from(binding.bottomSheetLayout.bottomSheetLayout)
         bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
-        binding.inputUserId.setOnEditorActionListener(object : TextView.OnEditorActionListener{
+        binding.inputUserId.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_GO){
+                if (actionId == EditorInfo.IME_ACTION_GO) {
                     getProcessRecom()
                     return true
                 }
                 return false
             }
         })
+
+        binding.btnTest.setOnClickListener {
+            viewClick ->
+                val loadingFragment = LoadingFragment()
+                val fragmentManager = supportFragmentManager.beginTransaction()
+                loadingFragment.show(fragmentManager, "Loading")
+                viewModelTest.sending(this, loadingFragment)
+                viewModelTest.getDetailTest().observe(this, Observer {
+                    val snackBar = Snackbar.make(
+                        viewClick, it.detail!!+"|"+ it.status,
+                        Snackbar.LENGTH_LONG
+                    ).setAction("Action", null)
+                    snackBar.show()
+                })
+        }
     }
 
-    private fun getProcessRecom(){
+    private fun getProcessRecom() {
         Utilities.hideKeyBoard(binding.inputUserId)
-        binding.loadingAnimate.visibility = View.VISIBLE
-        viewModel.sendingRequest(this, binding.inputUserId.text.toString(), binding.loadingAnimate, binding.inputUserId)
+        viewModel.sendingRequest(this, binding.inputUserId.text.toString(), binding.inputUserId)
         viewModel.getSongRecommend().observe(this, Observer {
             songAdapter = SongAdapter(this, it.dataList)
             binding.bottomSheetLayout.rvResultRekom.adapter = songAdapter
-            songAdapter.setOnClicked(object : SongAdapter.onItemCallback{
+            songAdapter.setOnClicked(object : SongAdapter.onItemCallback {
                 override fun itemClickPlay(songId: DataList) {
                     val intent = Intent(this@MainActivity, PlayerActivity::class.java)
                     intent.putExtra(PlayerActivity.SONG_ID, songId.songId)
@@ -60,7 +79,7 @@ class MainActivity : AppCompatActivity() {
             binding.inputUserId.isEnabled = true
             binding.inputUserId.isClickable = true
             val bottomSheet = BottomSheetBehavior.from(binding.bottomSheetLayout.bottomSheetLayout)
-            bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback(){
+            bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
 
                 }
