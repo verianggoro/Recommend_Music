@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:background="@drawable/bg_main">
+
+        <LinearLayout
+            android:id="@+id/container_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+            <Button
+                android:layout_gravity="right"
+                android:id="@+id/btn_test"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:text="Test"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/layout_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="80dp">
+
+            <TextView
+                android:id="@+id/title_apps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Musik Rekomendasi"
+                android:textColor="@color/white"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/subtitle_apps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="By: LangitMusik"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif-light"
+                android:gravity="end"
+                android:paddingEnd="90dp"
+                android:paddingStart="10dp"/>
+
+            <EditText
+                android:id="@+id/input_user_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_input"
+                android:drawableStart="@drawable/ic_search"
+                android:padding="5dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:maxLines="1"
+                android:lines="1"
+                android:inputType="number"
+                android:drawablePadding="10dp"
+                android:hint="Masukan ID Kamu"
+                android:textColorHint="@color/white"
+                android:textColor="@color/white"
+                android:layout_marginHorizontal="20dp"
+                android:imeOptions="actionGo"
+                android:singleLine="true"
+                android:layout_marginTop="80dp" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/loading_animate"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal"
+                app:lottie_autoPlay="true"
+                app:lottie_speed="1.25"
+                android:visibility="gone"
+                app:lottie_fileName="loading_animation.json"
+                app:lottie_loop="true" />
+        </LinearLayout>
+
+        <include
+            android:id="@+id/bottom_sheet_layout"
+            layout="@layout/layout_result_recommendation" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
