@@ -8,6 +8,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: RecommendationViewModel
     private lateinit var viewModelTest: TestConnectionViewModel
     private lateinit var songAdapter: SongAdapter
+    private lateinit var loadingFragment: LoadingFragment
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +38,9 @@ class MainActivity : AppCompatActivity() {
         viewModelTest = ViewModelProvider(this).get(TestConnectionViewModel::class.java)
         binding.bottomSheetLayout.rvResultRekom.layoutManager = LinearLayoutManager(this)
         val bottomSheet = BottomSheetBehavior.from(binding.bottomSheetLayout.bottomSheetLayout)
-        bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheet.peekHeight = 150
+        bottomSheet.isHideable = false
+        loadingFragment = LoadingFragment.newInstance()
         binding.inputUserId.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_GO) {
@@ -46,26 +51,34 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        binding.btnTest.setOnClickListener {
-            viewClick ->
-                val loadingFragment = LoadingFragment()
-                val fragmentManager = supportFragmentManager.beginTransaction()
-                loadingFragment.show(fragmentManager, "Loading")
-                viewModelTest.sending(this, loadingFragment)
-                viewModelTest.getDetailTest().observe(this, Observer {
-                    val snackBar = Snackbar.make(
-                        viewClick, it.detail!!+"|"+ it.status,
-                        Snackbar.LENGTH_LONG
-                    ).setAction("Action", null)
-                    snackBar.show()
-                })
+        binding.btnTest.setOnClickListener { viewClick ->
+            loadingFragment.show(supportFragmentManager, "Loading")
+            viewModelTest.sending(this, supportFragmentManager)
+            viewModelTest.getDetailTest().observe(this, Observer {
+                val snackBar = Snackbar.make(
+                    viewClick, it.detail!! + "|" + it.status,
+                    Snackbar.LENGTH_LONG
+                ).setAction("Action", null)
+                snackBar.show()
+            })
         }
     }
 
     private fun getProcessRecom() {
         Utilities.hideKeyBoard(binding.inputUserId)
-        viewModel.sendingRequest(this, binding.inputUserId.text.toString(), binding.inputUserId)
+        loadingFragment.show(supportFragmentManager, "Loading")
+        viewModel.sendingRequest(this, binding.inputUserId.text.toString(), supportFragmentManager)
         viewModel.getSongRecommend().observe(this, Observer {
+            if (it.dataList!!.isNotEmpty()){
+                binding.bottomSheetLayout.containerEmptyRecom.visibility = View.GONE
+                binding.bottomSheetLayout.containerResultMusic.visibility = View.VISIBLE
+            }else{
+                binding.bottomSheetLayout.containerEmptyRecom.visibility = View.VISIBLE
+                binding.bottomSheetLayout.containerResultMusic.visibility = View.GONE
+            }
+            binding.bottomSheetLayout.txtScoreMae.text = String.format(resources.getString(R.string.place_score_mae), it.mae)
+//            binding.bottomSheetLayout.txtScoreAvgPrecision.text = String.format(resources.getString(R.string.place_score_average_precision), it.avgPrecision)
+            binding.bottomSheetLayout.txtScoreRmse.text = String.format(resources.getString(R.string.place_score_rmse), it.rmse)
             songAdapter = SongAdapter(this, it.dataList)
             binding.bottomSheetLayout.rvResultRekom.adapter = songAdapter
             songAdapter.setOnClicked(object : SongAdapter.onItemCallback {

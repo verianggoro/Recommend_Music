@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class Song(
     @SerializedName("user_id") var userId: Int = 0,
+    @SerializedName("mae") var mae: Double = 0.0,
+    @SerializedName("rmse") var rmse: Double = 0.0,
+//    @SerializedName("average_precision") var avgPrecision : Double = 0.0,
     @SerializedName("recommend_list") var dataList: List<DataList>? = null
 )
 

@@ -14,6 +14,12 @@ import com.pembelajar.musicrecommendation.databinding.FragmentLoadingBinding
 class LoadingFragment: DialogFragment() {
     private lateinit var binding: FragmentLoadingBinding
 
+    companion object {
+        fun newInstance(): LoadingFragment {
+            return LoadingFragment()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -32,7 +38,7 @@ class LoadingFragment: DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(activity!!, theme) {
             override fun onBackPressed() {
-                Toast.makeText(context,"Please Wait", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Please Wait", Toast.LENGTH_SHORT).show()
             }
         }
     }

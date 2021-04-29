@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import android.view.View
 import android.widget.EditText
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,7 +23,7 @@ class RecommendationViewModel: ViewModel() {
     private val TAG = RecommendationViewModel::class.java.simpleName
     private var recomm: MutableLiveData<Song> = MutableLiveData()
 
-    fun sendingRequest(context: Context, userId: String, editText: EditText){
+    fun sendingRequest(context: Context, userId: String, loading: FragmentManager){
         val params: HashMap<String, String>? = hashMapOf()
         val form: HashMap<String, String?> = hashMapOf()
         viewModelScope.launch {
@@ -32,8 +34,9 @@ class RecommendationViewModel: ViewModel() {
                     val response = OkHttpHelper.executeGet(url, params, form, null)
                     Log.i(TAG, response!!)
                     withContext(Dispatchers.Main){
-                        editText.isEnabled = false
-                        editText.isClickable = false
+                        loading.findFragmentByTag("Loading")?.let {
+                            (it as DialogFragment).dismiss()
+                        }
                     }
                     val gson = Gson()
                     val songMapper = gson.fromJson(response, Song::class.java)
@@ -41,6 +44,9 @@ class RecommendationViewModel: ViewModel() {
                 }catch (e: Exception){
                     withContext(Dispatchers.Main) {
                         Utilities.showErrorDialog(context, e)
+                        loading.findFragmentByTag("Loading")?.let {
+                            (it as DialogFragment).dismiss()
+                        }
                     }
                 }
             }

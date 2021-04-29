@@ -6,4 +6,9 @@
     <string name="txt_accurate">Akurasi : %1s</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="txt_music_for_you">Musik Untuk Kamu</string>
+    <string name="msg_empty_music">Tidak Ada Musik Untuk Kamu</string>
+    <string name="place_score_mae">Score MAE : %1f</string>
+    <string name="place_score_rmse">Score RMSE : %2f</string>
+    <string name="place_score_average_precision">Score Average Precision : %3f</string>
 </resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="txt_music_for_you">Musik Untuk Kamu</string>
+    <string name="msg_empty_music">Tidak Ada Musik Untuk Kamu</string>
+    <string name="place_score_mae">Score MAE : %1f</string>
+    <string name="place_score_rmse">Score RMSE : %2f</string>
+    <string name="place_score_average_precision">Score Average Precision : %3f</string>
+</resources>

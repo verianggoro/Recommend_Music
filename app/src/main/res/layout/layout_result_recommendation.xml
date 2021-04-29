@@ -1,43 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <LinearLayout
         android:id="@+id/bottom_sheet_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/shape_sheet_style"
         android:orientation="vertical"
         android:padding="10dp"
         app:behavior_hideable="true"
         app:behavior_peekHeight="90dp"
-        android:background="@drawable/shape_sheet_style"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <ImageView
+            android:id="@+id/ic_up_result"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:id="@+id/ic_up_result"
-            android:src="@drawable/ic_arrow_up"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
-            android:layout_marginTop="10dp"/>
+            android:src="@drawable/ic_arrow_up" />
 
-
-        <TextView
-            android:id="@+id/title_result_layout"
+        <LinearLayout
+            android:id="@+id/container_title_music_recomm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Musik Untuk Kamu"
-            android:textColor="@color/white"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title_result_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_music_for_you"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="@color/white"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginBottom="15dp"
+            android:background="@color/white" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_result_rekom"
+        <LinearLayout
+            android:id="@+id/container_empty_recom"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/ic_music_empty"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_music" />
+
+            <TextView
+                android:id="@+id/txt_empty_music"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/msg_empty_music"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/container_result_music"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/txt_score_mae"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/txt_score_rmse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/txt_score_avg_precision"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_result_rekom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp" />
+        </LinearLayout>
 
     </LinearLayout>
 </layout>

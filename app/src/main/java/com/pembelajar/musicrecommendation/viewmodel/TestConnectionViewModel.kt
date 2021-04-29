@@ -21,7 +21,7 @@ class TestConnectionViewModel: ViewModel() {
     private val TAG = TestConnectionViewModel::class.java.simpleName
     private var testData : MutableLiveData<Detail> = MutableLiveData()
 
-    fun sending(context: Context, loading: DialogFragment){
+    fun sending(context: Context, loading: FragmentManager){
         val params: HashMap<String, String>? = hashMapOf()
         val form: HashMap<String, String?> = hashMapOf()
         viewModelScope.launch {
@@ -35,12 +35,16 @@ class TestConnectionViewModel: ViewModel() {
                     val detail = gson.fromJson(response, Detail::class.java)
                     testData.postValue(detail)
                     withContext(Dispatchers.Main){
-                        loading.dismiss()
+                        loading.findFragmentByTag("Loading")?.let {
+                            (it as DialogFragment).dismiss()
+                        }
                     }
                 }catch (e: Exception){
                     withContext(Dispatchers.Main) {
                         Utilities.showErrorDialog(context, e)
-                        loading.dismiss()
+                        loading.findFragmentByTag("Loading")?.let {
+                            (it as DialogFragment).dismiss()
+                        }
                     }
                 }
             }
