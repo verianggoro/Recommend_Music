@@ -23,7 +23,7 @@ class PlayerViewModel: ViewModel() {
 
     fun sendingRequestGetStream(songId : String, context: Context){
         val params: HashMap<String, String>? = hashMapOf(
-            "apikey" to "sidqXeLcfX7dFiVcjxAnvPe8yPIQIIrX",
+            "bitRate" to "BR0096",
             "songId" to songId,
             "L_UID" to "28160464"
         )
@@ -31,7 +31,7 @@ class PlayerViewModel: ViewModel() {
         viewModelScope.launch {
             withContext(Dispatchers.IO){
                 try {
-                    val url = Config.BASE_URL_GET_STREAM
+                    val url = Config.BASE_URL_NEW_STREAM
                     Log.i(TAG, form.toString())
                     val response = OkHttpHelper.executeGet(url, params, form, null)
                     val gson = Gson()

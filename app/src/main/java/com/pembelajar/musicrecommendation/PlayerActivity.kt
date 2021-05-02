@@ -11,14 +11,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.*
 import com.pembelajar.musicrecommendation.commons.Utilities
 import com.pembelajar.musicrecommendation.databinding.ActivityPlayerBinding
 import com.pembelajar.musicrecommendation.viewmodel.PlayerViewModel
+import kotlinx.coroutines.*
 import java.util.*
+
 
 class PlayerActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding: ActivityPlayerBinding
@@ -26,11 +25,13 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var player: SimpleExoPlayer
     private lateinit var runnable: Runnable
     private lateinit var handler: Handler
-    companion object{
+
+    companion object {
         const val SONG_ID = "song_id"
         const val SONG_NAMES = "song_names"
     }
-    var songId : String? = null
+
+    var songId: String? = null
     var songNames: String? = null
     private var playWhenReady = true
     private var currentWindow = 0
@@ -39,33 +40,28 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_player)
 
-        if (intent.extras != null){
+        if (intent.extras != null) {
             songId = intent.getStringExtra(SONG_ID)
             songNames = intent.getStringExtra(SONG_NAMES)
         }
 
         viewModel = ViewModelProvider(this).get(PlayerViewModel::class.java)
-        player = SimpleExoPlayer.Builder(this).build()
         binding.playbackIvPlay.setOnClickListener(this)
         binding.playbackIvPause.setOnClickListener(this)
+        binding.playbackSbTimer.max = 100
 
         getMetaData()
+        handler = Handler(Looper.getMainLooper())
 
-        val timer = Timer()
-        timer.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                if (player != null) {
-                    val mCurrentPosition: Long = (player.currentPosition * 100)/player.duration
-                    binding.playbackSbTimer.progress = mCurrentPosition.toInt()
-                }
-            }
-
-        }, 0, 1000)
 
     }
 
     override fun onStart() {
         super.onStart()
+        player = SimpleExoPlayer.Builder(this).build()
+        runOnUiThread {
+            runnables.run()
+        }
         if (Build.VERSION.SDK_INT >= 24) {
             getStreamingInitPlayer()
         }
@@ -93,9 +89,15 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    fun getMetaData(){
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacksAndMessages(null);
+    }
+
+    fun getMetaData() {
         Glide.with(this)
             .load("https://www.langitmusik.co.id/imageSong.do?songId=$songId")
+            .error(R.drawable.placeholder_song)
             .into(binding.imgSong)
         viewModel.sengReqMetaData(songId!!, this)
         viewModel.getMetaData().observe(this, Observer {
@@ -109,7 +111,7 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    fun getStreamingInitPlayer(){
+    fun getStreamingInitPlayer() {
         viewModel.sendingRequestGetStream(songId!!, this)
         viewModel.getStreamData().observe(this, Observer {
             if (it != null) {
@@ -120,6 +122,16 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener {
                 player.prepare()
 
                 player.addListener(object : Player.EventListener {
+                    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                        if (playbackState === SimpleExoPlayer.STATE_READY) {
+                            var milis = player.duration
+                            binding.txtTotalTime.text = Utilities.milliSecondsToTimer(milis)
+                            Log.i("DURATTTTION", Utilities.milliSecondsToTimer(milis))
+                        }else if (playbackState === SimpleExoPlayer.STATE_ENDED){
+                            binding.playbackIvPlay.visibility = View.VISIBLE
+                            binding.playbackIvPause.visibility = View.GONE
+                        }
+                    }
                     override fun onPlayerError(error: ExoPlaybackException) {
                         when (error.type) {
                             ExoPlaybackException.TYPE_SOURCE -> Utilities.showErrorDialog(
@@ -145,7 +157,7 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    fun releasePlayer(){
+    fun releasePlayer() {
         if (player != null) {
             playWhenReady = player.playWhenReady
             playbackPosition = player.currentPosition
@@ -155,7 +167,7 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v?.id){
+        when (v?.id) {
             R.id.playback_iv_play -> {
                 startPlayer()
             }
@@ -179,10 +191,25 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener {
         binding.playbackIvPause.visibility = View.VISIBLE
     }
 
-    private fun isPlaying():Boolean{
+    private fun isPlaying(): Boolean {
         return player != null && player.playbackState != Player.STATE_ENDED
                 && player.playbackState != Player.STATE_IDLE
                 && player.playWhenReady
     }
 
+    private fun updateTime(){
+        if (player != null) {
+            val mCurrentPosition: Long = (player.currentPosition * 100)/player.duration
+            Log.i("CUURRRENT", mCurrentPosition.toString())
+            binding.playbackSbTimer.progress = mCurrentPosition.toInt()
+            binding.txtCurrentTime.text = Utilities.milliSecondsToTimer(player.currentPosition)
+        }
+    }
+
+    private val runnables = object : Runnable {
+        override fun run() {
+            updateTime()
+            handler.postDelayed(this, 1000)
+        }
+    }
 }

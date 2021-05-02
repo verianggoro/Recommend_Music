@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         loadingFragment = LoadingFragment.newInstance()
         binding.inputUserId.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+                bottomSheet.peekHeight = 150
                 if (actionId == EditorInfo.IME_ACTION_GO) {
                     getProcessRecom()
                     return true
