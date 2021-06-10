@@ -142,10 +142,6 @@ class PlayerActivity : AppCompatActivity(), View.OnClickListener {
                                 this@PlayerActivity,
                                 error
                             )
-                            ExoPlaybackException.TYPE_TIMEOUT -> Utilities.showErrorDialog(
-                                this@PlayerActivity,
-                                error
-                            )
                         }
                     }
                 })
