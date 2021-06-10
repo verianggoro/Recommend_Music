@@ -60,7 +60,7 @@ object OkHttpHelper {
         val uri = builtUri.build()
         val request = buildReq.url(uri.toString()).post(formBody).build()
         val response = getClient().newCall(request).execute()
-        return getStringBody(response, response.body)
+        return getStringBody(response, response.body())
     }
 
     @Throws(IOException::class, OkHttpException::class)
@@ -96,7 +96,7 @@ object OkHttpHelper {
         val uri = buildUri.build()
         val request = buildReq.url(uri.toString()).post(formBody).build()
         val response = getClient().newCall(request).execute()
-        return getStringBody(response, response.body)
+        return getStringBody(response, response.body())
     }
 
     @Throws(IOException::class, OkHttpException::class)
@@ -128,11 +128,11 @@ object OkHttpHelper {
         val uri = builtUri.build()
         val request = buildReq.url(uri.toString()).build()
         val response = getClient().newCall(request).execute()
-        return getStringBody(response, response.body)
+        return getStringBody(response, response.body())
     }
 
     fun cancelExecute(){
-        getClient().dispatcher
+        getClient().dispatcher()
     }
 
     fun getStatusMessage(statusCode: Int): String {
@@ -151,7 +151,7 @@ object OkHttpHelper {
 
     @Throws(IOException::class, OkHttpException::class)
     fun getStringBody(response: Response, body: ResponseBody?): String {
-        if (response.code != 200 && response.code != 201 && response.code != 204) {
+        if (response.code() != 200 && response.code() != 201 && response.code() != 204) {
             throw OkHttpException(response)
         }
 
@@ -182,7 +182,7 @@ object OkHttpHelper {
     }
 
     class OkHttpException @Throws(IOException::class)
-    constructor(response: Response) : Exception(getStatusMessage(response.code)) {
+    constructor(response: Response) : Exception(getStatusMessage(response.code())) {
         private val statusMessage: String
         private var bodyString: String? = null
         private val method: String
@@ -191,11 +191,11 @@ object OkHttpHelper {
         val body: ByteArray?
 
         init {
-            val body = response.body
-            this.statusCode = response.code
-            this.statusMessage = response.message
-            this.method = response.request.method
-            this.url = response.request.url.toString()
+            val body = response.body()
+            this.statusCode = response.code()
+            this.statusMessage = response.message()
+            this.method = response.request().method()
+            this.url = response.request().url().toString()
             this.body = body?.bytes()
         }
 

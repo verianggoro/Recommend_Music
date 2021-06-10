@@ -1,4 +1,4 @@
-package com.pembelajar.musicrecommendation
+package com.pembelajar.musicrecommendation.view
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.databinding.DataBindingUtil
+import com.pembelajar.musicrecommendation.R
 import com.pembelajar.musicrecommendation.databinding.ActivitySplashScreenBinding
 
 class SplashScreen : AppCompatActivity() {

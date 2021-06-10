@@ -1,4 +1,4 @@
-package com.pembelajar.musicrecommendation
+package com.pembelajar.musicrecommendation.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,13 +8,12 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
+import com.pembelajar.musicrecommendation.R
 import com.pembelajar.musicrecommendation.adapter.SongAdapter
 import com.pembelajar.musicrecommendation.commons.Utilities
 import com.pembelajar.musicrecommendation.databinding.ActivityMainBinding

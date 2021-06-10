@@ -1,4 +1,4 @@
-package com.pembelajar.musicrecommendation
+package com.pembelajar.musicrecommendation.view
 
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.*
+import com.pembelajar.musicrecommendation.R
 import com.pembelajar.musicrecommendation.commons.Utilities
 import com.pembelajar.musicrecommendation.databinding.ActivityPlayerBinding
 import com.pembelajar.musicrecommendation.viewmodel.PlayerViewModel
