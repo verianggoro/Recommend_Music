@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
 import com.pembelajar.musicrecommendation.R
 import com.pembelajar.musicrecommendation.adapter.SongAdapter
 import com.pembelajar.musicrecommendation.commons.Utilities
@@ -20,12 +19,12 @@ import com.pembelajar.musicrecommendation.databinding.ActivityMainBinding
 import com.pembelajar.musicrecommendation.fragment.LoadingFragment
 import com.pembelajar.musicrecommendation.model.DataList
 import com.pembelajar.musicrecommendation.viewmodel.RecommendationViewModel
-import com.pembelajar.musicrecommendation.viewmodel.TestConnectionViewModel
+import com.pembelajar.musicrecommendation.viewmodel.CheckingNetwork
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: RecommendationViewModel
-    private lateinit var viewModelTest: TestConnectionViewModel
+    private lateinit var viewModelTest: CheckingNetwork
     private lateinit var songAdapter: SongAdapter
     private lateinit var loadingFragment: LoadingFragment
 
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         viewModel = ViewModelProvider(this).get(RecommendationViewModel::class.java)
-        viewModelTest = ViewModelProvider(this).get(TestConnectionViewModel::class.java)
+        viewModelTest = ViewModelProvider(this).get(CheckingNetwork::class.java)
         binding.bottomSheetLayout.rvResultRekom.layoutManager = LinearLayoutManager(this)
         val bottomSheet = BottomSheetBehavior.from(binding.bottomSheetLayout.bottomSheetLayout)
         bottomSheet.peekHeight = 150
@@ -50,18 +49,6 @@ class MainActivity : AppCompatActivity() {
                 return false
             }
         })
-
-        binding.btnTest.setOnClickListener { viewClick ->
-            loadingFragment.show(supportFragmentManager, "Loading")
-            viewModelTest.sending(this, supportFragmentManager)
-            viewModelTest.getDetailTest().observe(this, Observer {
-                val snackBar = Snackbar.make(
-                    viewClick, it.detail!! + "|" + it.status,
-                    Snackbar.LENGTH_LONG
-                ).setAction("Action", null)
-                snackBar.show()
-            })
-        }
     }
 
     private fun getProcessRecom() {
@@ -77,7 +64,6 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomSheetLayout.containerResultMusic.visibility = View.GONE
             }
             binding.bottomSheetLayout.txtScoreMae.text = String.format(resources.getString(R.string.place_score_mae), it.mae)
-//            binding.bottomSheetLayout.txtScoreAvgPrecision.text = String.format(resources.getString(R.string.place_score_average_precision), it.avgPrecision)
             binding.bottomSheetLayout.txtScoreRmse.text = String.format(resources.getString(R.string.place_score_rmse), it.rmse)
             songAdapter = SongAdapter(this, it.dataList)
             binding.bottomSheetLayout.rvResultRekom.adapter = songAdapter
