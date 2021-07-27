@@ -2,11 +2,9 @@ package com.pembelajar.musicrecommendation.commons
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.google.common.collect.Multimap
 import com.pembelajar.musicrecommendation.R
 import okhttp3.*
-import okhttp3.logging.HttpLoggingInterceptor
 import java.io.IOException
 import java.io.PrintWriter
 import java.io.Reader
@@ -19,7 +17,6 @@ object OkHttpHelper {
     fun getClient(): OkHttpClient {
         if (client == null) {
             client = OkHttpClient().newBuilder()
-                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
@@ -54,8 +51,6 @@ object OkHttpHelper {
                 headers[key]?.let { buildReq.addHeader(key, it) }
             }
         }
-        Log.i(TAG, form.toString())
-        Log.i(TAG, url)
         val formBody = builder.build()
         val uri = builtUri.build()
         val request = buildReq.url(uri.toString()).post(formBody).build()
@@ -81,7 +76,6 @@ object OkHttpHelper {
         }
         while (iterator.hasNext()) {
             val pair = iterator.next() as Map.Entry<*, *>
-            Log.i(TAG, "PAIR $pair")
             builder.add(pair.key.toString(), pair.value.toString())
         }
 
@@ -90,8 +84,6 @@ object OkHttpHelper {
                 headers[key]?.let { buildReq.addHeader(key, it) }
             }
         }
-        Log.i(TAG, form.toString())
-        Log.i(TAG, url)
         val formBody = builder.build()
         val uri = buildUri.build()
         val request = buildReq.url(uri.toString()).post(formBody).build()
@@ -124,7 +116,6 @@ object OkHttpHelper {
                 headers[key]?.let { buildReq.addHeader(key, it) }
             }
         }
-        Log.i(TAG, url)
         val uri = builtUri.build()
         val request = buildReq.url(uri.toString()).build()
         val response = getClient().newCall(request).execute()

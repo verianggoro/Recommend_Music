@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "172153007786",
+    "project_id": "recommendmusicta",
+    "storage_bucket": "recommendmusicta.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:172153007786:android:1f70f6c3dbd1737421ead3",
+        "android_client_info": {
+          "package_name": "com.pembelajar.musicrecommendation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "172153007786-1jcpmj89ukdrc2rjqqa39i6qgh093vpq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pembelajar.musicrecommendation",
+            "certificate_hash": "54c96baebb8178f461e91501aff0e816c1206987"
+          }
+        },
+        {
+          "client_id": "172153007786-b3rrln6r0i78tr5709t80egg0c3h4bme.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvekSxDxbF2WOl8sp6AOdQqoc-pB7pA38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "172153007786-b3rrln6r0i78tr5709t80egg0c3h4bme.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
